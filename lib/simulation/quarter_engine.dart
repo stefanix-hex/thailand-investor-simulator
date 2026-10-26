@@ -68,6 +68,13 @@ class QuarterEngine {
     s = _operateAssets(s, rng, log);
 
     if (s.cash < 0) {
+
+s = _changeReputation(
+  s,
+  -2,
+  'Negative cash balance',
+);
+
       log.add(_fmt(s, 'Cash is negative. Emergency asset pressure is likely next quarter.'));
       s = _distress(s, rng, log);
     }
@@ -157,7 +164,19 @@ class QuarterEngine {
       ),
     );
   }
+static GameState _changeReputation(
+  GameState s,
+  double delta,
+  String reason,
+) {
+  final newRep = (s.reputation + delta).clamp(0.0, 100.0);
 
+  return s.copyWith(
+    reputation: newRep,
+    reputationLastChange:
+        '${delta >= 0 ? '+' : ''}${delta.toStringAsFixed(0)} • $reason',
+  );
+}
   static int _decliningYears(GameState s) {
     var n = 0;
     final keys = s.yearEndNetWorth.keys.toList()..sort();

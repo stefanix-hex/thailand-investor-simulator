@@ -19,7 +19,7 @@ class DashboardScreen extends ConsumerWidget {
       children: [
         Text(game.periodLabel, style: Theme.of(context).textTheme.headlineSmall),
         Text(
-          'Turn ${game.turn} of 80',
+          'Turn ${game.turn} of 160',
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 16),
@@ -59,6 +59,14 @@ class DashboardScreen extends ConsumerWidget {
             _m('Portfolio', money(m.portfolioValue)),
             _m('Debt', money(m.debt)),
             _m('Net worth', money(m.netWorth)),
+            _m(
+  'Reputation',
+  '${game.reputation.toStringAsFixed(0)}/100',
+),
+_m(
+  'Tier',
+  game.reputationTier,
+),
             _m('Passive income', '${money(m.passiveIncome)}/yr'),
             _m('LTV', percent(m.ltv), alert: m.ltv > 0.7),
             _m('DSCR', ratio(m.dscr), alert: m.dscr < 1.2 && m.quarterlyDebtService > 0),
@@ -69,6 +77,14 @@ class DashboardScreen extends ConsumerWidget {
             _m('RevPAR', m.revpar == 0 ? '—' : money(m.revpar)),
           ],
         ),
+        if (game.reputationLastChange != null)
+  Padding(
+    padding: const EdgeInsets.only(top: 8),
+    child: Text(
+      'Last Reputation Change: ${game.reputationLastChange}',
+      style: Theme.of(context).textTheme.bodySmall,
+    ),
+  ),
         const SizedBox(height: 20),
         Text('This quarter cash flow', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),

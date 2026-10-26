@@ -28,11 +28,14 @@ class GameState {
     this.report,
     this.lastLoanDecision,
     this.forcedStressApplied = false,
-    this.sawFailedInvestment = false,
-    this.sawDelay = false,
-    this.sawPermitIssue = false,
-    this.sawDispute = false,
-    this.sawDownturn = false,
+this.sawFailedInvestment = false,
+this.sawDelay = false,
+this.sawPermitIssue = false,
+this.sawDispute = false,
+this.sawDownturn = false,
+
+this.reputation = 50,
+this.reputationLastChange,
   });
 
   final int seed;
@@ -62,18 +65,26 @@ class GameState {
   final bool sawPermitIssue;
   final bool sawDispute;
   final bool sawDownturn;
+  final double reputation;
+final String? reputationLastChange;
 
   int get turn => (year - 1) * 4 + quarter;
-  bool get isFinalQuarter => year == 20 && quarter == 4;
+  bool get isFinalQuarter => year == 40 && quarter == 4;
   String get periodLabel => 'Year $year  ·  Q$quarter';
-
+String get reputationTier {
+  if (reputation < 20) return 'Distressed';
+  if (reputation < 40) return 'Speculative';
+  if (reputation < 60) return 'Established';
+  if (reputation < 80) return 'Professional';
+  return 'Institutional';
+}
   factory GameState.titleScreen() {
     return GameState(
       seed: 0,
       rngState: 0,
       year: 1,
       quarter: 1,
-      cash: 200000,
+cash: 300000,
       properties: const [],
       businesses: const [],
       securities: const [],
@@ -86,8 +97,10 @@ class GameState {
       log: const [],
       netWorthHistory: const [200000],
       yearEndNetWorth: const {},
-      phase: GamePhase.title,
-    );
+phase: GamePhase.title,
+reputation: 50,
+reputationLastChange: null,
+);
   }
 
   factory GameState.newCampaign({int seed = 1}) {
@@ -96,7 +109,7 @@ class GameState {
       rngState: seed,
       year: 1,
       quarter: 1,
-      cash: 200000,
+cash: 300000,
       properties: const [],
       businesses: const [],
       securities: const [],
@@ -112,6 +125,8 @@ class GameState {
       netWorthHistory: const [200000],
       yearEndNetWorth: const {},
       phase: GamePhase.playing,
+      reputation: 50,
+reputationLastChange: 'New investor profile created',
     );
   }
 
@@ -142,8 +157,12 @@ class GameState {
     bool? sawFailedInvestment,
     bool? sawDelay,
     bool? sawPermitIssue,
-    bool? sawDispute,
-    bool? sawDownturn,
+bool? sawDispute,
+bool? sawDownturn,
+
+double? reputation,
+String? reputationLastChange,
+bool clearReputationChange = false,
   }) {
     return GameState(
       seed: seed,
@@ -174,6 +193,10 @@ class GameState {
       sawPermitIssue: sawPermitIssue ?? this.sawPermitIssue,
       sawDispute: sawDispute ?? this.sawDispute,
       sawDownturn: sawDownturn ?? this.sawDownturn,
+      reputation: reputation ?? this.reputation,
+reputationLastChange: clearReputationChange
+    ? null
+    : (reputationLastChange ?? this.reputationLastChange),
     );
   }
 
@@ -206,6 +229,8 @@ class GameState {
         'sawPermitIssue': sawPermitIssue,
         'sawDispute': sawDispute,
         'sawDownturn': sawDownturn,
+        'reputation': reputation,
+'reputationLastChange': reputationLastChange,
       };
 
   factory GameState.fromJson(Map<String, dynamic> json) {
@@ -277,6 +302,8 @@ class GameState {
       sawPermitIssue: json['sawPermitIssue'] as bool? ?? false,
       sawDispute: json['sawDispute'] as bool? ?? false,
       sawDownturn: json['sawDownturn'] as bool? ?? false,
+      reputation: (json['reputation'] as num?)?.toDouble() ?? 50,
+reputationLastChange: json['reputationLastChange'] as String?,
     );
   }
 }

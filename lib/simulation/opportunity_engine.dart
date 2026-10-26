@@ -85,8 +85,8 @@ class OpportunityEngine {
       PropertyKind.phuketVilla => rng.range(180000, 620000),
       PropertyKind.pattayaApartment => rng.range(48000, 160000),
       PropertyKind.commercial => rng.range(200000, 780000),
-      PropertyKind.hotel => rng.range(420000, 1800000),
-      PropertyKind.resort => rng.range(800000, 2800000),
+   PropertyKind.hotel => rng.range(1200000, 6000000),
+PropertyKind.resort => rng.range(2500000, 12000000),
       PropertyKind.mixedUse => rng.range(500000, 1900000),
     };
     final cycle = state.market.propertyCycle[loc] ?? 1;
@@ -106,8 +106,8 @@ class OpportunityEngine {
         quality: rng.range(0.35, 0.92),
         conflictProne: rng.chance(0.35),
       );
-      equity = rng.range(0.45, 0.7);
-      voting = rng.chance(0.5) ? equity : rng.range(0.3, 0.55);
+equity = rng.range(0.2, 0.55);      
+voting = rng.chance(0.6) ? equity : rng.range(0.3, 0.55);
     }
     final hospitality =
         kind == PropertyKind.hotel || kind == PropertyKind.resort;
